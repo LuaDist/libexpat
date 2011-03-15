@@ -106,3 +106,44 @@ INSTALL(FILES lib/expat.h lib/expat_external.h DESTINATION ${INSTALL_INC})
 # Install docs
 INSTALL(FILES COPYING Changes README DESTINATION ${INSTALL_DATA})
 INSTALL(DIRECTORY doc/ DESTINATION ${INSTALL_DOC})
+
+# IMPROVE: install xmlwf utility too? (see below test suite)
+
+# Tests
+include(CTest)
+if(BUILD_TESTING)
+	ADD_EXECUTABLE(runtests tests/runtests.c tests/chardata.c tests/minicheck.c)
+	TARGET_LINK_LIBRARIES(runtests expat)
+	ADD_TEST(runtests runtests)
+	ADD_EXECUTABLE(runtestspp tests/runtestspp.cpp tests/runtests.c tests/chardata.c tests/minicheck.c)
+	TARGET_LINK_LIBRARIES(runtestspp expat)
+	ADD_TEST(runtestspp runtestspp)
+	#if test "$ac_cv_func_mmap_fixed_mapped" = "yes"; then
+	#   FILEMAP=unixfilemap
+	#else
+	#    FILEMAP=readfilemap
+	#fi
+	SET(FILEMAP unixfilemap)  # IMPROVE?
+	ADD_EXECUTABLE(xmlwf xmlwf/xmlwf.c xmlwf/xmlfile.c xmlwf/codepage.c xmlwf/${FILEMAP}.c)
+	TARGET_LINK_LIBRARIES(xmlwf expat)
+	# These optional tests are normally disabled.
+	# They don't seem to complete work using the GNU makefiles either.
+	# Similer errors as seen in http://mail.libexpat.org/pipermail/expat-checkins/2006-August.txt
+	IF(0 AND UNIX) # IMPROVE: shell script only runs on *nix.
+		IF(NOT EXISTS xmlts.zip)
+			FILE(DOWNLOAD http://www.w3.org/XML/Test/xmlts20020606.zip ./xmlts.zip)
+		ENDIF()
+		IF(NOT EXISTS XML-Test-Suite)
+			EXECUTE_PROCESS(COMMAND unzip -q xmlts.zip) # IMPROVE: unzip might not exist
+		ENDIF()
+		IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/xmltest.sh)
+			FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/tests/xmltest.sh _data)
+			STRING(REGEX REPLACE "XMLWF=[^\n]*" "XMLWF=\$MYDIR/xmlwf" _data "${_data}")
+			FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/xmltest.sh "${_data}")
+		ENDIF()
+		ADD_TEST(xmltest sh ${CMAKE_CURRENT_BINARY_DIR}/xmltest.sh)
+		SET_PROPERTY(TEST xmltest PROPERTY PASS_REGULAR_EXPRESSION "Failed: 0")
+	ENDIF()
+endif()
+
+
