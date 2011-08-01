@@ -118,12 +118,13 @@ if(BUILD_TESTING)
 	ADD_EXECUTABLE(runtestspp tests/runtestspp.cpp tests/runtests.c tests/chardata.c tests/minicheck.c)
 	TARGET_LINK_LIBRARIES(runtestspp expat)
 	ADD_TEST(runtestspp runtestspp)
-	#if test "$ac_cv_func_mmap_fixed_mapped" = "yes"; then
-	#   FILEMAP=unixfilemap
-	#else
-	#    FILEMAP=readfilemap
-	#fi
-	SET(FILEMAP unixfilemap)  # IMPROVE?
+
+	IF(WIN32 OR MINGW OR CYGWIN)
+		SET(FILEMAP win32filemap)
+	ELSE()
+		SET(FILEMAP unixfilemap)
+	ENDIF()
+
 	ADD_EXECUTABLE(xmlwf xmlwf/xmlwf.c xmlwf/xmlfile.c xmlwf/codepage.c xmlwf/${FILEMAP}.c)
 	TARGET_LINK_LIBRARIES(xmlwf expat)
 	# These optional tests are normally disabled.
