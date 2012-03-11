@@ -125,8 +125,8 @@ if(BUILD_TESTING)
 		SET(FILEMAP unixfilemap)
 	ENDIF()
 
-	ADD_EXECUTABLE(xmlwf/xmlwf xmlwf/xmlwf.c xmlwf/xmlfile.c xmlwf/codepage.c xmlwf/${FILEMAP}.c)
-	TARGET_LINK_LIBRARIES(xmlwf/xmlwf expat)
+	ADD_EXECUTABLE(xmlwf xmlwf/xmlwf.c xmlwf/xmlfile.c xmlwf/codepage.c xmlwf/${FILEMAP}.c)
+	TARGET_LINK_LIBRARIES(xmlwf expat)
 	# These optional tests are normally disabled.
 	# They don't seem to complete work using the GNU makefiles either.
 	# Similer errors as seen in http://mail.libexpat.org/pipermail/expat-checkins/2006-August.txt
