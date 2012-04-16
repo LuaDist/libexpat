@@ -1,5 +1,5 @@
-# Copyright (C) 2007-2009 LuaDist.
-# Created by Peter Kapec
+# Copyright (C) 2007-2012 LuaDist.
+# Created by Peter Kapec, Peter Drahoš
 # Redistribution and use of this file is allowed according to the terms of the MIT license.
 # For details see the COPYRIGHT file distributed with LuaDist.
 # Please note that the package source code is licensed under its own license.
@@ -119,7 +119,7 @@ if(BUILD_TESTING)
 	TARGET_LINK_LIBRARIES(runtestspp expat)
 	ADD_TEST(runtestspp runtestspp)
 
-	IF(WIN32 OR MINGW OR CYGWIN)
+	IF(WIN32 OR MINGW)
 		SET(FILEMAP win32filemap)
 	ELSE()
 		SET(FILEMAP unixfilemap)
